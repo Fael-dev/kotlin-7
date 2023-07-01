@@ -1,38 +1,53 @@
 package br.com.alura.bytebank
 
 fun main() {
-    testaTipoFuncaoReferencia()
-    testaTipoFuncaoClasse()
-    val minhaFuncaoLambda: () -> Unit = {
-        println("Executa como lambda")
+//    testaTipoFuncaoReferencia()
+//    testaTipoFuncaoClasse()
+
+    val minhaFuncaoLambda = { a: Int, b: Int ->
+        a + b
     }
-    println(minhaFuncaoLambda)
-    println(minhaFuncaoLambda())
-    val minhaFuncaoAnonima: () -> Unit = fun() {
-        println("Executa como lambda")
+    println(minhaFuncaoLambda(2, 7))
+
+    val minhaFuncaoAnonima: (Int, Int) -> Int = fun(a, b): Int {
+        println("Executa como anônima")
+        return a + b
     }
-    println(minhaFuncaoAnonima)
-    println(minhaFuncaoAnonima())
+    println(minhaFuncaoAnonima(10, 11))
+
+    val calculaBonificacaoLambda: (salario: Double) -> Double = lambda@{ salario ->
+        if (salario > 150.0) {
+            return@lambda salario + 50.0
+        }
+        salario + 100.0
+    }
+    println(calculaBonificacaoLambda(100.0))
+
+    val calculaBonificacaoAnonima: (salario: Double) -> Double = fun(salario: Double): Double {
+        if (salario > 150.0) {
+            return salario + 50.0
+        }
+        return salario + 100.0
+    }
+    println(calculaBonificacaoAnonima(200.5))
 }
 
 fun testaTipoFuncaoReferencia() {
-    val minhaFuncao: () -> Unit = ::teste // Ou val minhaFuncao = ::teste
+    val minhaFuncao: (Int, Int) -> Int = ::soma // Ou val minhaFuncao = ::teste
     // println(minhaFuncao) => não executa a função
-    println(minhaFuncao())
+    println(minhaFuncao(5, 2))
 }
 
-fun teste() {
-    println("Executa função")
+fun soma(a: Int, b: Int): Int {
+    return a + b
 }
 
 fun testaTipoFuncaoClasse() {
-    val minhaFuncaoClasses: () -> Unit = Teste() // Ou val minhaFuncaoClasses = Teste()
+    val minhaFuncaoClasses: (Int, Int) -> Int = Soma() // Ou val minhaFuncaoClasses = Teste()
     // println(minhaFuncaoClasses()) => não executa a função
-    println(minhaFuncaoClasses())
+    println(minhaFuncaoClasses(4, 3))
 }
 
-class Teste: () -> Unit {
-    override fun invoke() {
-        println("Executa invoke do teste")
-    }
+class Soma: (Int, Int) -> Int {
+    override fun invoke(a: Int, b: Int): Int = a + b
 }
