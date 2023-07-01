@@ -1,53 +1,52 @@
 package br.com.alura.bytebank
 
+import br.com.alura.bytebank.modelo.Autenticavel
+import br.com.alura.bytebank.modelo.Endereco
+import br.com.alura.bytebank.modelo.SistemaInterno
+
 fun main() {
-//    testaTipoFuncaoReferencia()
-//    testaTipoFuncaoClasse()
+//    val endereco = Endereco(logradouro = "Rua Regina Estela Cavalcante", numero = 207)
+//    val enderecoEmMaiusculo = "${endereco.logradouro}, ${endereco.numero}".toUpperCase()
+//    println(enderecoEmMaiusculo)
+    Endereco(logradouro = "Rua Regina Estela Cavalcante", numero = 207)
+        .let { endereco ->
+            "${endereco.logradouro}, ${endereco.numero}".toUpperCase()
+        }.let (::println)
+    listOf(
+        Endereco(complemento = "casa"),
+        Endereco(),
+        Endereco(complemento = "apartamento"))
+        .filter(predicate = { endereco -> endereco.complemento.isNotEmpty() })
+        .let(block = (::println))
 
-    val minhaFuncaoLambda = { a: Int, b: Int ->
-        a + b
-    }
-    println(minhaFuncaoLambda(2, 7))
+    soma(1, 6, resultado = (::println))
 
-    val minhaFuncaoAnonima: (Int, Int) -> Int = fun(a, b): Int {
-        println("Executa como anônima")
-        return a + b
+    val autenticavel = object: Autenticavel {
+        val senha = 1234
+        override fun autentica(senha: Int) = this.senha == senha
     }
-    println(minhaFuncaoAnonima(10, 11))
 
-    val calculaBonificacaoLambda: (salario: Double) -> Double = lambda@{ salario ->
-        if (salario > 150.0) {
-            return@lambda salario + 50.0
-        }
-        salario + 100.0
-    }
-    println(calculaBonificacaoLambda(100.0))
-
-    val calculaBonificacaoAnonima: (salario: Double) -> Double = fun(salario: Double): Double {
-        if (salario > 150.0) {
-            return salario + 50.0
-        }
-        return salario + 100.0
-    }
-    println(calculaBonificacaoAnonima(200.5))
+    SistemaInterno().entra(autenticavel, 1234) { println("Realizar pagamento") }
+    // OU
+    // SistemaInterno().entra(autenticavel, 1234, autenticado = { println("Realizar pagamento") })
 }
 
-fun testaTipoFuncaoReferencia() {
-    val minhaFuncao: (Int, Int) -> Int = ::soma // Ou val minhaFuncao = ::teste
-    // println(minhaFuncao) => não executa a função
-    println(minhaFuncao(5, 2))
+fun soma(a: Int, b: Int, resultado: (Int) -> Unit) {
+    println("Antes da soma")
+    resultado(a + b)
+    println("Depois da soma")
 }
 
-fun soma(a: Int, b: Int): Int {
-    return a + b
+fun testeHigherOrderFunction() {
+    1.let{ it }
+    2.0.let{ it }
+
+    "".let(::testeRecebeString)
+    teste(1, {})
 }
 
-fun testaTipoFuncaoClasse() {
-    val minhaFuncaoClasses: (Int, Int) -> Int = Soma() // Ou val minhaFuncaoClasses = Teste()
-    // println(minhaFuncaoClasses()) => não executa a função
-    println(minhaFuncaoClasses(4, 3))
-}
+fun testeRecebeString(valor: String) {}
 
-class Soma: (Int, Int) -> Int {
-    override fun invoke(a: Int, b: Int): Int = a + b
+// Higher order function => Função que recebe ou devolve outra função
+fun teste(teste: Int, bloco: () -> Unit) {
 }
